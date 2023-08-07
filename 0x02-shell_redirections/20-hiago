@@ -1,2 +1,2 @@
 #!/bin/bash
-tr '^[:upper:]\|^[:lower:]' -d c
+tr -d cC
