@@ -9,6 +9,9 @@ while [ "$hour" -lt 12 ]; do
     while [ "$minute" -le 59 ]; do
         echo "$minute"
         ((minute++))
+        if [ "$minute" -eq 60 ]; then
+            break  # Exit the inner loop when minutes reach 60
+        fi
     done
     
     ((hour++))
