@@ -1,48 +1,36 @@
 #!/usr/bin/env bash
-# 101-manage_my_process script
+# Manages 'manage_my_process'
 
 MANAGE_SCRIPT="./manage_my_process"
 PID_FILE="/var/run/my_process.pid"
 
-start_manage_my_process() {
-    if [ -f "$PID_FILE" ]; then
-        echo "manage_my_process is already started."
-    else
-        $MANAGE_SCRIPT &
-        echo $! > "$PID_FILE"
+# Check if at least one argument is provided
+if [ $# -gt 0 ]; then
+    # Check the provided argument and perform the corresponding action
+    if [ "$1" == "start" ]; then
+        # Start manage_my_process
+        ./manage_my_process &
+        touch /var/run/my_process.pid
+        echo "$!" > /var/run/my_process.pid
         echo "manage_my_process started"
-    fi
-}
-
-stop_manage_my_process() {
-    if [ -f "$PID_FILE" ]; then
-        pid=$(cat "$PID_FILE")
-        kill "$pid"
-        rm -f "$PID_FILE"
+    elif [ "$1" == "stop" ]; then
+        # Stop manage_my_process
         echo "manage_my_process stopped"
+        kill "$(cat /var/run/my_process.pid)"
+        rm -f /var/run/my_process.pid
+    elif [ "$1" == "restart" ]; then
+        # Restart manage_my_process
+        kill "$(cat /var/run/my_process.pid)"
+        rm -f /var/run/my_process.pid
+        ./manage_my_process &
+        touch /var/run/my_process.pid
+        echo "$!" > /var/run/my_process.pid
+        echo "manage_my_process restarted"
     else
-        echo "manage_my_process is not running."
+        # Invalid argument provided, display usage information
+        echo "Usage: manage_my_process {start|stop|restart}"
     fi
-}
-
-restart_manage_my_process() {
-    stop_manage_my_process
-    start_manage_my_process
-    echo "manage_my_process restarted"
-}
-
-case "$1" in
-    start)
-        start_manage_my_process
-        ;;
-    stop)
-        stop_manage_my_process
-        ;;
-    restart)
-        restart_manage_my_process
-        ;;
-    *)
-        echo "Usage: $0 {start|stop|restart}"
-        exit 1
-        ;;
-esac
+else
+    # No argument provided, display usage information
+    echo "Usage: manage_my_process {start|stop|restart}"
+fi
