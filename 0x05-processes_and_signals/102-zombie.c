@@ -9,11 +9,11 @@
  */
 int infinite_while(void)
 {
-    while (1)
-    {
-        sleep(1);
-    }
-    return (0);
+	while (1)
+	{
+		sleep(1);
+	}
+	return (0);
 }
 
 /**
@@ -23,25 +23,25 @@ int infinite_while(void)
  */
 int main(void)
 {
-    pid_t child_pid;
-    int i;
+	pid_t child_pid;
+	int i;
 
-    for (i = 0; i < 5; i++)
-    {
-        child_pid = fork();
-        if (child_pid > 0)
-        {
-            // Parent process
-            printf("Zombie process created, PID: %d\n", child_pid);
-        }
-        else
-        {
-            // Child process
-            exit(0);
-        }
-    }
+	for (i = 0; i < 5; i++)
+	{
+		child_pid = fork();
+		if (child_pid > 0)
+		{
+			// Parent process
+			printf("Zombie process created, PID: %d\n", child_pid);
+		}
+		else
+		{
+			// Child process
+			exit(0);
+		}
+	}
 
-    infinite_while(); // Calls the infinite_while function
+	infinite_while(); // Calls the infinite_while function
 
-    return (0);
+	return (0);
 }
