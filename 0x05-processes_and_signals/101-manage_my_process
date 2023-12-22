@@ -1,36 +1,30 @@
 #!/usr/bin/env bash
 # Manages 'manage_my_process'
 
-MANAGE_SCRIPT="./manage_my_process"
-PID_FILE="/var/run/my_process.pid"
-
-# Check if at least one argument is provided
-if [ $# -gt 0 ]; then
-    # Check the provided argument and perform the corresponding action
-    if [ "$1" == "start" ]; then
-        # Start manage_my_process
-        ./manage_my_process &
-        touch /var/run/my_process.pid
-        echo "$!" > /var/run/my_process.pid
-        echo "manage_my_process started"
-    elif [ "$1" == "stop" ]; then
-        # Stop manage_my_process
-        echo "manage_my_process stopped"
-        kill "$(cat /var/run/my_process.pid)"
-        rm -f /var/run/my_process.pid
-    elif [ "$1" == "restart" ]; then
-        # Restart manage_my_process
-        kill "$(cat /var/run/my_process.pid)"
-        rm -f /var/run/my_process.pid
-        ./manage_my_process &
-        touch /var/run/my_process.pid
-        echo "$!" > /var/run/my_process.pid
-        echo "manage_my_process restarted"
+if [ $# -gt 0 ]
+then
+    if [ "$1" == "start" ]
+    then
+	./manage_my_process &
+	touch /var/run/my_process.pid
+	echo "$!" > /var/run/my_process.pid
+	echo "manage_my_process started"
+    elif [ "$1" == "stop" ]
+    then
+	echo "manage_my_process stopped"
+	kill "$(cat /var/run/my_process.pid)"
+	rm -f /var/run/my_process.pid
+    elif [ "$1" == "restart" ]
+    then
+	kill "$(cat /var/run/my_process.pid)"
+	rm -f /var/run/my_process.pid
+	./manage_my_process &
+	touch /var/run/my_process.pid
+	echo "$!" > /var/run/my_process.pid
+	echo "manage_my_process restarted"
     else
-        # Invalid argument provided, display usage information
-        echo "Usage: manage_my_process {start|stop|restart}"
+	echo "Usage: manage_my_process {start|stop|restart}"
     fi
 else
-    # No argument provided, display usage information
     echo "Usage: manage_my_process {start|stop|restart}"
 fi
