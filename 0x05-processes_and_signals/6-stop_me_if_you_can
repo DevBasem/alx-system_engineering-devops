@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# This script stops the 4-to_infinity_and_beyond process without using kill or killall
+
+# Send a specific signal (SIGUSR1) to the process
+pkill -SIGUSR1 -f 4-to_infinity_and_beyond
