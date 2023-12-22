@@ -29,19 +29,12 @@ int main(void)
 	for (i = 0; i < 5; i++)
 	{
 		child_pid = fork();
-		if (child_pid > 0)
-		{
-			// Parent process
-			printf("Zombie process created, PID: %d\n", child_pid);
-		}
-		else
-		{
-			// Child process
-			exit(0);
-		}
+		if (!child_pid)
+			return (0);
+		printf("Zombie process created, PID: %d\n", zombie);
 	}
 
-	infinite_while(); // Calls the infinite_while function
+	infinite_while();
 
 	return (0);
 }
