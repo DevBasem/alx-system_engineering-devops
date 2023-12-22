@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
 # 7-highlander script
 
-# Function to handle SIGTERM signal
-handle_sigterm() {
-    echo "I am invincible!!!"
-    exit 0
-}
-
-# Trap SIGTERM and call the handle_sigterm function
-trap 'handle_sigterm' SIGTERM
+trap 'echo "I am invincible!!!"' SIGTERM
 
 # Infinite loop with a sleep of 2 seconds
 while true; do
