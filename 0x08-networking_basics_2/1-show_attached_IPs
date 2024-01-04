@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Use the 'ip' command to display active IPv4 IPs
+ip -4 addr show | awk '/inet/ {print $2}' | cut -d'/' -f1
