@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Check if the script is run with sudo
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run the script with sudo: sudo $0"
+    exit 1
+fi
+
+# Backup the original /etc/hosts file
+cp /etc/hosts /etc/hosts.bak
+
+# Update the /etc/hosts file
+sed -i 's/^127\.0\.0\.1[[:space:]]\+localhost/127.0.0.2 localhost/' /etc/hosts
+echo "8.8.8.8 facebook.com" >> /etc/hosts
+
+# Display success message
+echo "Host configurations updated successfully!"
+
+# Display the content of the modified /etc/hosts file
+echo "Updated /etc/hosts file:"
+cat /etc/hosts
