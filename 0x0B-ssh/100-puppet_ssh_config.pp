@@ -1,19 +1,20 @@
 # 100-puppet_ssh_config.pp
 
-# Install puppetlabs/stdlib module
 class { 'stdlib': }
 
 # Ensure SSH client configuration
 include stdlib
 
 file_line { 'Turn off passwd auth':
-  path   => '/etc/ssh/sshd_config',
-  line   => 'PasswordAuthentication no',
+  ensure => 'present',
+  path => '/etc/ssh/sshd_config',
+  line => 'PasswordAuthentication no',
 }
 
 file_line { 'Declare identity file':
-  path   => '/etc/ssh/ssh_config',
-  line   => 'IdentityFile ~/.ssh/school',
+  ensure => 'present',
+  path => '/etc/ssh/ssh_config',
+  line => 'IdentityFile ~/.ssh/school',
 }
 
 # Notify SSH service to reload configuration
