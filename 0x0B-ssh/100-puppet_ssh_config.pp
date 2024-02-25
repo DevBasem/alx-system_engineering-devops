@@ -1,5 +1,5 @@
 include stdlib
-# Setting up my client config file
+# SSH client configuration using puppet
 
 file_line { 'Turn off passwd auth':
   ensure => present,
