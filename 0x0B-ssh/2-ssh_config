@@ -1,0 +1,10 @@
+# 2-ssh_config
+# This SSH client configuration file sets up options for connecting to a server
+
+Host *
+    IdentityFile ~/.ssh/school
+    PasswordAuthentication no
+    SendEnv LANG LC_*
+    HashKnownHosts yes
+    GSSAPIAuthentication yes
+    GSSAPIDelegateCredentials no
