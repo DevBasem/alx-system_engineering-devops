@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Bash script to configure Nginx for a custom 404 page
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run this script as root or using sudo."
+    exit 1
+fi
+
+# Ensure Nginx is installed
+if ! command -v nginx &>/dev/null; then
+    echo "Nginx is not installed. Please run the necessary script first."
+    exit 1
+fi
+
+# Configuration for custom 404 page
+NOT_FOUND_CONF="/etc/nginx/sites-available/custom_404"
+NOT_FOUND_STRING="Ceci n'est pas une page"
+
+# Create a new Nginx configuration file for custom 404 page
+cat > "$NOT_FOUND_CONF" <<EOL
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    error_page 404 /custom_404;
+
+    location /custom_404 {
+        internal;
+        alias /var/www/html/custom_404.html;
+    }
+
+    location / {
+        # Your existing location configuration
+        try_files \$uri \$uri/ =404;
+    }
+}
+EOL
+
+# Create a custom 404 page
+echo "$NOT_FOUND_STRING" | sudo tee /var/www/html/custom_404.html > /dev/null
+
+# Create a symbolic link to enable the new configuration
+ln -sf "$NOT_FOUND_CONF" "/etc/nginx/sites-enabled/"
+
+# Restart Nginx to apply the changes
+service nginx restart
+
+echo "Nginx has been configured for a custom 404 page. Accessing a non-existing page will return HTTP 404 with the message: '$NOT_FOUND_STRING'."
