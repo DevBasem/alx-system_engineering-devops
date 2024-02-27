@@ -15,7 +15,7 @@ fi
 
 # Configuration for redirection
 REDIRECT_CONF="/etc/nginx/sites-available/redirect_me"
-REDIRECT_TARGET="https://www.youtube.com/watch?v=xvFZjo5PgG0"
+REDIRECT_TARGET="https://www.youtube.com/watch?v=QH2-TGUlwu4"
 
 # Create a new Nginx configuration file for redirection
 cat > "$REDIRECT_CONF" <<EOL
