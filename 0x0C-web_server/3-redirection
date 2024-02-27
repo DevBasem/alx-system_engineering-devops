@@ -1,41 +1,38 @@
 #!/usr/bin/env bash
-# Bash script to configure Nginx for redirection
+# Install nginx on web server; Nginx should be listening on port 80
+# Redirects to another page
 
-# Check if running as root
-if [ "$EUID" -ne 0 ]; then
-    echo "Please run this script as root or using sudo."
-    exit 1
-fi
+# Update package information and install Nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
 
-# Ensure Nginx is installed
-if ! command -v nginx &>/dev/null; then
-    echo "Nginx is not installed. Please run 1-install_nginx_web_server script first."
-    exit 1
-fi
+# Allow Nginx through the firewall
+sudo ufw allow 'Nginx HTTP'
 
-# Configuration for redirection
-REDIRECT_CONF="/etc/nginx/sites-available/redirect_me"
-REDIRECT_TARGET="https://www.youtube.com/watch?v=QH2-TGUlwu4"
+# Create a default Hello World page
+echo "Hello World!" | sudo tee /var/www/html/index.nginx-debian.html > /dev/null
 
 # Create a new Nginx configuration file for redirection
-cat > "$REDIRECT_CONF" <<EOL
+sudo tee /etc/nginx/sites-available/redirect_me > /dev/null <<EOL
 server {
     listen 80;
     server_name _;
 
     location /redirect_me {
-        return 301 $REDIRECT_TARGET;
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+
+    location / {
+        # Your existing location configuration
+        try_files \$uri \$uri/ =404;
     }
 }
 EOL
 
-# Remove the default symbolic link to prevent conflicts
-rm -f /etc/nginx/sites-enabled/default
-
 # Create a symbolic link to enable the new configuration
-ln -sf "$REDIRECT_CONF" "/etc/nginx/sites-enabled/"
+sudo ln -sf /etc/nginx/sites-available/redirect_me /etc/nginx/sites-enabled/
 
 # Restart Nginx to apply the changes
-service nginx restart
+sudo service nginx restart
 
-echo "Nginx has been configured for redirection. /redirect_me now redirects to $REDIRECT_TARGET."
+echo "Nginx has been configured for redirection. /redirect_me now redirects to https://www.youtube.com/watch?v=QH2-TGUlwu4."
