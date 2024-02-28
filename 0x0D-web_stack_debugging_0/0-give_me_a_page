@@ -9,7 +9,4 @@ apt-get install -y apache2
 echo "<html><head></head><body>Hello Holberton</body></html>" > /var/www/html/index.html
 
 # Start Apache and make it run in the background
-service apache2 start
-
-# Keep the script running
-tail -f /dev/null
+sudo service apache2 start
