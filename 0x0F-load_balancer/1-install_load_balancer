@@ -1,28 +1,20 @@
-#!/bin/bash
+ a new HAproxy as a load balancer
 
-# Update package list
-sudo apt-get update
+# Install HAproxy on a server
+apt-get -y update
+apt-get -y install haproxy=1.6.\*
 
-# Install HAProxy
-sudo apt-get install -y haproxy
-
-# Configure HAProxy
-cat <<EOF | sudo tee /etc/haproxy/haproxy.cfg
-frontend web_frontend
-    bind *:80
-    mode http
-    default_backend web_servers
+# Configure haproxy configuration file to distribute requests using a roundrobin algorithm
+echo '
+frontend sammykingx.tech
+        bind 0:80
+        default_backend web_servers
 
 backend web_servers
-    mode http
-    balance roundrobin
-    server web-01 502382-web-01:80 check
-    server web-02 502382-web-02:80 check
-EOF
+        balance roundrobin
+        server 502382-web-01 52.204.60.93
+        server 502382-web-02 34.229.71.219
+' >> /etc/haproxy/haproxy.cfg
 
-# Restart HAProxy
-sudo systemctl restart haproxy
-
-# Enable HAProxy to start on boot
-sudo systemctl enable haproxy
-
+# Restart HAproxy service
+service haproxy restart
