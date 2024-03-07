@@ -1,15 +1,50 @@
 #!/usr/bin/env bash
-# This script configures Nginx to include a custom HTTP response header.
+# This script configures Nginx on a new Ubuntu machine and adds a custom HTTP response header
 
-# Install Nginx if not already installed
-sudo apt-get update
+# Update package information
+sudo apt-get -y update
+
+# Install Nginx
 sudo apt-get -y install nginx
 
-# Create a custom Nginx configuration file
-CONFIG_FILE="/etc/nginx/sites-available/default"
+# Allow Nginx HTTP traffic through the firewall
+sudo ufw allow 'Nginx HTTP'
 
-# Add a custom header to the configuration
-echo "add_header X-Served-By \$hostname;" | sudo tee -a $CONFIG_FILE
+# Create web directories
+sudo mkdir -p /var/www/html /var/www/error
 
-# Reload Nginx to apply changes
-sudo service nginx reload
+# Set permissions for the web directories
+sudo chmod -R 755 /var/www
+
+# Create index.html and 404.html files
+echo 'Hello World!' > /var/www/html/index.html
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+
+# Configure Nginx server block
+server_config="server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	root /var/www/html;
+	index index.html index.htm index.nginx-debian.html;
+	server_name _;
+	add_header X-Served-By \$hostname;
+	location / {
+		try_files \$uri \$uri/ =404;
+	}
+	if (\$request_filename ~ redirect_me){
+		rewrite ^ https://youtube.com permanent;
+	}
+	error_page 404 /404.html;
+	location = /404.html {
+		internal;
+	}
+}"
+
+# Write the server configuration to the default Nginx site
+echo "$server_config" | sudo tee /etc/nginx/sites-enabled/default > /dev/null
+
+# Restart Nginx to apply changes
+sudo service nginx restart
+
+# Exit the script
+exit 0
