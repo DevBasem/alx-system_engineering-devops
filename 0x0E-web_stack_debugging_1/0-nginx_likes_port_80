@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
 # listen to port 80 fx
-# null
-# null
 sed -i 's/8080/80/g' /etc/nginx/sites-enabled/default
 service nginx restart
