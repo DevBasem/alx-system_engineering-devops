@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Install and configure HAProxy for load balancing web servers
 
 # Update the package index
 sudo apt update
