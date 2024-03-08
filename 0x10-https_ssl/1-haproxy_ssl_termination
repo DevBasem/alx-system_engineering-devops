@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Script to configure HAProxy with SSL termination for www.basem.tech
+
+# Install HAProxy 1.5 or higher
+sudo apt-get update
+sudo apt-get install -y haproxy
+
+# Install certbot
+sudo apt-get install -y certbot
+
+# Obtain SSL certificate for the subdomain www.basem.tech
+sudo certbot certonly --standalone -d www.basem.tech
+
+# Configure HAProxy for SSL termination
+cat <<EOL | sudo tee /etc/haproxy/haproxy.cfg
+global
+    log /dev/log    local0
+    log /dev/log    local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy/admin.sock mode 660 level admin
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+    log global
+    mode http
+    option httplog
+    option dontlognull
+    timeout connect 5000
+    timeout client 50000
+    timeout server 50000
+
+frontend www-https
+    bind *:443 ssl crt /etc/letsencrypt/live/www.basem.tech/fullchain.pem no-sslv3
+    http-request add-header X-Forwarded-Proto:\ https
+    default_backend www-backend
+
+backend www-backend
+    balance roundrobin
+    server 502382-web-01 54.157.152.252:80 check
+    server 502382-web-02 54.82.119.92:80 check
+EOL
+
+# Restart HAProxy to apply the configuration
+sudo service haproxy restart
