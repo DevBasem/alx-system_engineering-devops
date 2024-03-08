@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Update HAProxy configuration to redirect HTTP to HTTPS
+cat <<EOL | sudo tee /etc/haproxy/100-redirect_http_to_https.cfg
+frontend http-redirect
+    bind *:80
+    mode http
+    option forwardfor
+    option http-server-close
+    reqirep ^Host:\ .* Host:\ %{host},reqadd X-Forwarded-Proto:\ http
+    acl is-https hdr(X-Forwarded-Proto) https
+    redirect scheme https if !is-https
+EOL
+
+# Restart HAProxy
+sudo service haproxy restart
+
+# Display HAProxy status
+sudo service haproxy status
+
+echo "HAProxy HTTP to HTTPS redirection configured!"
