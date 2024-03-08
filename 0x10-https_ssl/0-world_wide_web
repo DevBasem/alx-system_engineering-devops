@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# This script performs a DNS audit for specified subdomains of a domain
+
+# Check if domain argument is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 <domain> [subdomain]"
+    exit 1
+fi
+
+# Define subdomains to audit
+subdomains=("www" "lb-01" "web-01" "web-02")
+
+# If subdomain argument is provided, audit only that subdomain
+if [ -n "$2" ]; then
+    subdomains=("$2")
+fi
+
+# Loop through subdomains and perform DNS audit
+for subdomain in "${subdomains[@]}"; do
+    result=$(dig +short "$subdomain.$1" | awk '{print $1}')
+    if [ -n "$result" ]; then
+        echo "The subdomain $subdomain is a A record and points to $result"
+    else
+        echo "No DNS record found for subdomain $subdomain"
+    fi
+done
