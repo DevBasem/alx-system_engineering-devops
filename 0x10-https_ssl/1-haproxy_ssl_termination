@@ -11,7 +11,15 @@ sudo apt-get install -y certbot
 # Obtain SSL certificate for the subdomain www.basem.tech
 sudo certbot certonly --standalone -d www.basem.tech
 
-# Configure HAProxy for SSL termination
+# Combine certificate and key into a single file
+sudo cat /etc/letsencrypt/live/www.basem.tech/fullchain.pem /etc/letsencrypt/live/www.basem.tech/privkey.pem > ~/www.basem.tech.pem
+sudo mv ~/www.basem.tech.pem /etc/letsencrypt/live/www.basem.tech/
+
+# Set correct permissions for the combined file
+sudo chown root:root /etc/letsencrypt/live/www.basem.tech/www.basem.tech.pem
+sudo chmod 600 /etc/letsencrypt/live/www.basem.tech/www.basem.tech.pem
+
+# Update HAProxy configuration
 cat <<EOL | sudo tee /etc/haproxy/haproxy.cfg
 global
     log /dev/log    local0
@@ -33,8 +41,8 @@ defaults
     timeout server 50000
 
 frontend www-https
-    bind *:443 ssl crt /etc/letsencrypt/live/www.basem.tech/fullchain.pem no-sslv3
-    http-request add-header X-Forwarded-Proto:\ https
+    bind *:443 ssl crt /etc/letsencrypt/live/www.basem.tech/www.basem.tech.pem no-sslv3
+    http-request add-header X-Forwarded-Proto https
     default_backend www-backend
 
 backend www-backend
@@ -43,5 +51,10 @@ backend www-backend
     server 502382-web-02 54.82.119.92:80 check
 EOL
 
-# Restart HAProxy to apply the configuration
+# Restart HAProxy
 sudo service haproxy restart
+
+# Display HAProxy status
+sudo service haproxy status
+
+echo "HAProxy setup complete!"
