@@ -1,0 +1,15 @@
+# Install ufw if not already installed
+sudo apt-get update
+sudo apt-get install ufw
+
+# Set up ufw rules to allow specific ports and block all other incoming traffic
+sudo ufw allow 22/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 80/tcp
+sudo ufw default deny incoming
+
+# Enable ufw to apply the rules
+sudo ufw enable
+
+# Verify ufw status to ensure rules are applied correctly
+sudo ufw status
