@@ -6,4 +6,4 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-su -c 'whoami' $1
+sudo -u "$1" whoami
