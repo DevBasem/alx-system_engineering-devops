@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# This script configures the container to run Nginx as the nginx user
+
+# Stop nginx if it's running as root
+service nginx stop
+
+# Replace nginx user and group in nginx.conf
+sed -i 's/user\s*nginx;/user nginx nginx;/g' /etc/nginx/nginx.conf
+
+# Replace nginx user and group in default site configuration
+sed -i 's/user\s*nginx;/user nginx nginx;/g' /etc/nginx/sites-available/default
+
+# Start nginx as a background process
+/usr/sbin/nginx -g 'daemon off;' &
