@@ -2,8 +2,8 @@
 """Retrieve information about an employee's TODO list progress
 using the JSONPlaceholder REST API and export it to a CSV file."""
 
-import requests
 import csv
+import requests
 import sys
 
 
@@ -17,7 +17,10 @@ def get_todo_progress(employee_id):
     Returns:
         None
     """
-    user_response = requests.get("https://jsonplaceholder.typicode.com/users/{}".format(employee_id))
+    user_response = requests.get(
+        "https://jsonplaceholder.typicode.com/users/{}"
+        .format(employee_id)
+    )
     user_data = user_response.json()
     employee_name = user_data.get('username')
 
@@ -26,7 +29,13 @@ def get_todo_progress(employee_id):
 
     filename = "{}.csv".format(employee_id)
     with open(filename, mode='w', newline='') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL, lineterminator='\n')
+        writer = csv.writer(
+            csvfile,
+            delimiter=',',
+            quotechar='"',
+            quoting=csv.QUOTE_ALL,
+            lineterminator='\n'
+        )
         for task in todo_data:
             if task.get('userId') == int(employee_id):
                 writer.writerow([
