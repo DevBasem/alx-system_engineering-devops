@@ -1,52 +1,30 @@
 #!/usr/bin/python3
-"""
-This script retrieves information about an employee's TODO list progress
-using the JSONPlaceholder REST API.
-"""
+"""For a given employee ID, returns information about
+their TODO list progress"""
 
 import requests
 import sys
 
-
-def get_todo_progress(employee_id):
-    """
-    Retrieve and display information about an employee's TODO list progress.
-
-    Args:
-        employee_id (int): The ID of the employee.
-
-    Returns:
-        None
-    """
-    base_url = 'https://jsonplaceholder.typicode.com/users'
-    todo_url = '{}/{}'.format(base_url, employee_id)
-    user_url = '{}/todos'.format(todo_url)
-
-    # Fetch user data
-    user_response = requests.get(todo_url)
-    user_data = user_response.json()
-    employee_name = user_data['name']
-
-    # Fetch todo list data
-    todo_response = requests.get(user_url)
-    todo_data = todo_response.json()
-
-    # Calculate progress
-    total_tasks = len(todo_data)
-    done_tasks = sum(1 for task in todo_data if task['completed'])
-
-    # Display progress
-    print("Employee {} is done with tasks ({}"
-          "/{}):".format(employee_name, done_tasks, total_tasks))
-    for task in todo_data:
-        if task['completed']:
-            print("\t{}".format(task['title']))
-
-
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 script.py <employee_id>")
-        sys.exit(1)
 
-    employee_id = sys.argv[1]
-    get_todo_progress(employee_id)
+    userId = sys.argv[1]
+    user = requests.get("https://jsonplaceholder.typicode.com/users/{}"
+                        .format(userId))
+
+    name = user.json().get('name')
+
+    todos = requests.get('https://jsonplaceholder.typicode.com/todos')
+    totalTasks = 0
+    completed = 0
+
+    for task in todos.json():
+        if task.get('userId') == int(userId):
+            totalTasks += 1
+            if task.get('completed'):
+                completed += 1
+
+    print('Employee {} is done with tasks({}/{}):'
+          .format(name, completed, totalTasks))
+
+    print('\n'.join(["\t " + task.get('title') for task in todos.json()
+          if task.get('userId') == int(userId) and task.get('completed')]))
