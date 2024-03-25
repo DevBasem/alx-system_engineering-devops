@@ -35,7 +35,7 @@ def get_todo_progress(employee_id):
 
     for task in todos_response.json():
         if task.get('userId') == int(employee_id) and task.get('completed'):
-            print('\t{}'.format(task.get("title")))
+            print('\t {}'.format(task.get("title")))
 
 
 if __name__ == "__main__":
