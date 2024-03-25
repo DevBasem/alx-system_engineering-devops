@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """Retrieve information about an employee's TODO list progress
-using the JSONPlaceholder REST API and export data in CSV format."""
+using the JSONPlaceholder REST API and export it to a CSV file."""
 
-import csv
 import requests
+import csv
 import sys
 
 
@@ -17,36 +17,24 @@ def get_todo_progress(employee_id):
     Returns:
         None
     """
-    # Fetch user data
-    user_response = requests.get(
-        "https://jsonplaceholder.typicode.com/users/{}".format(employee_id)
-    )
+    user_response = requests.get("https://jsonplaceholder.typicode.com/users/{}".format(employee_id))
     user_data = user_response.json()
-    employee_name = user_data.get('name')
+    employee_name = user_data.get('username')
 
-    # Fetch todo list data
     todos_response = requests.get('https://jsonplaceholder.typicode.com/todos')
     todo_data = todos_response.json()
 
-    # Collect tasks owned by the employee
-    employee_tasks = []
-    for task in todo_data:
-        if task.get('userId') == int(employee_id):
-            task_row = [
-                "{}".format(employee_id),
-                "{}".format(employee_name),
-                "{}".format(str(task.get('completed'))),
-                "{}".format(task.get('title'))
-            ]
-            employee_tasks.append(task_row)
-
-    # Export data to CSV file
-    filename = '{}.csv'.format(employee_id)
-    with open(filename, 'w', newline='') as csvfile:
-        csvwriter = csv.writer(csvfile)
-        csvwriter.writerows(employee_tasks)
-
-    print("Data exported to", filename)
+    filename = "{}.csv".format(employee_id)
+    with open(filename, mode='w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL, lineterminator='\n')
+        for task in todo_data:
+            if task.get('userId') == int(employee_id):
+                writer.writerow([
+                    str(employee_id),
+                    employee_name,
+                    str(task.get('completed')),
+                    task.get('title')
+                ])
 
 
 if __name__ == "__main__":
