@@ -5,6 +5,7 @@ using the JSONPlaceholder REST API."""
 import requests
 import sys
 
+
 def get_todo_progress(employee_id):
     """
     Retrieve and display information about an employee's TODO list progress.
@@ -15,8 +16,10 @@ def get_todo_progress(employee_id):
     Returns:
         None
     """
-    user_response = requests.get("https://jsonplaceholder.typicode.com/users/{}"
-                                 .format(employee_id))
+    user_response = requests.get(
+        "https://jsonplaceholder.typicode.com/users/{}"
+        .format(employee_id)
+    )
     user_data = user_response.json()
     employee_name = user_data.get('name')
 
