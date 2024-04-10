@@ -1,9 +1,12 @@
 #!/usr/bin/python3
 """
-Queries the Reddit API and returns the number of subscribers for a given subreddit.
+Queries the Reddit API and returns the number of subscribers for
+a given subreddit.
 """
 
+
 import requests
+
 
 def number_of_subscribers(subreddit):
     """
@@ -25,5 +28,6 @@ def number_of_subscribers(subreddit):
     else:
         return 0
 
+
 if __name__ == "__main__":
-    print("This script is meant to be imported and used. Please refer to 0-main.py.")
+    print("This is meant to be imported and used. Please refer to 0-main.py.")

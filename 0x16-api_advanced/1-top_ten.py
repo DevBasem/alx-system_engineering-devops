@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 """
-Queries the Reddit API and prints the titles of the first 10 hot posts listed for a given subreddit.
+Queries the Reddit API and prints the titles of the first
+10 hot posts listed for a given subreddit.
 """
 
 import requests
+
 
 def top_ten(subreddit):
     """
@@ -30,5 +32,6 @@ def top_ten(subreddit):
     else:
         print(None)
 
+
 if __name__ == "__main__":
-    print("This script is meant to be imported and used. Please refer to 1-main.py.")
+    print("This is meant to be imported and used. Please refer to 1-main.py.")
