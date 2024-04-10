@@ -6,17 +6,24 @@ Queries the Reddit API and returns the number of subscribers for a given subredd
 import requests
 
 def number_of_subscribers(subreddit):
-    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
-    headers = {"User-Agent": "linux:0x16.api.advanced.basem:v1.0.0 (by /u/DevBasem)"}
+    """
+    Returns the number of subscribers for a given subreddit.
 
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        data = response.json()
-        return data["data"]["subscribers"]
-    except requests.RequestException as e:
-        print("Error fetching data:", e)
+    Args:
+        subreddit (str): The name of the subreddit.
+
+    Returns:
+        int: The number of subscribers, or 0 if the subreddit is invalid.
+    """
+    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
+    headers = {
+        "User-Agent": "linux:28nMP2OF6Z7BDuB6fTRT3Q:v1.0 (by /u/DevBasem)"
+    }
+    response = requests.get(url, headers=headers, allow_redirects=False)
+    if response.status_code == 200:
+        return response.json()["data"]["subscribers"]
+    else:
         return 0
-    except KeyError:
-        print("Invalid subreddit or unexpected response format")
-        return 0
+
+if __name__ == "__main__":
+    print("This script is meant to be imported and used. Please refer to 0-main.py.")
