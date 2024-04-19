@@ -8,6 +8,6 @@ if [[ -z $MASTER_PID ]]; then
     exit 1
 fi
 
-kill -s SIGHUP $MASTER_PID
+kill -s SIGHUP "$MASTER_PID"
 
 echo "Gunicorn reloaded gracefully."
