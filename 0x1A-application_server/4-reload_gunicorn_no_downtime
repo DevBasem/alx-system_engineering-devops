@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-
 # Find the PID of the Gunicorn master process
+
 MASTER_PID=$(pgrep gunicorn)
 
 if [[ -z $MASTER_PID ]]; then
